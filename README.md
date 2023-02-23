@@ -33,7 +33,7 @@ maybe scoreboard page should be edit .
 I don't add any License, just use it, update it. It was my end of term project and frankly I used some oob material to provide project requirement. Maybe it will inspire you and give you ideas when you review other people's code and some class and function structures may be useful for you. There may be minor errors and bugs. I haven't looked for a long time. You can contact via e-mail or send a request.
 I'd like to update this project when it's available **so if you're curious, you can follow it**
 
-## Communication
+## Contact
 *Email*: **erenelagoz@gmail.com**
 
 > **Good Work <3**
