@@ -27,14 +27,19 @@ that's it.
 ## Screenshots
 
 ### Teams
+![teams](https://github.com/ErenElagz/Football-Manager-Game/assets/125195062/22277e2f-03f8-49b0-a9d9-eccce15caf3c)
 
 ### Scoreboard
+![scoreboard](https://github.com/ErenElagz/Football-Manager-Game/assets/125195062/83f594aa-47c4-4d97-9101-5d0b5ebe4e09)
 
 ### Team Strategies
+![team](https://github.com/ErenElagz/Football-Manager-Game/assets/125195062/0d1c3e8f-a23d-47e2-abf9-b9dde4020c60)
 
 ### Matches
+![fixture](https://github.com/ErenElagz/Football-Manager-Game/assets/125195062/d6b2bb5e-ca92-4b53-a94e-41804ac3db39)
 
-### Other Screenshots
+### Options
+![options](https://github.com/ErenElagz/Football-Manager-Game/assets/125195062/09120719-1bb0-48b0-a362-01afbde4c231)
 
 ## License
 I don't want to add any License, just use and update it. It was my end of term project
