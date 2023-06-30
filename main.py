@@ -1,79 +1,76 @@
+# Imports
 import random
-from abc import ABC, abstractmethod
+from prettytable import PrettyTable, SINGLE_BORDER
 
-teams        = ["Arsenal","Aston_Villa","Brentford","Brighto","Burnley","Chelsea","Crystal_Palace","Everton","Leeds_United","Leicester_City","Liverpool","Manchester_City","Manchester_United","Newcastle_United","Norwich_City","Southampton","Tottenham_Hotspur","Watford","West_Ham_United","Wolverhampton_Wanderers"]
-strategies   = ["Aggressive","Low Aggressive","Normal","Low Defensive","Defensive"]
-week_counter = 1
+# RAW Python Colors
+class Colors:
+    #Text
+    frontBlack   = '\033[30m'
+    frontRed     = '\033[31m'
+    frontGreen   = '\033[32m'
+    frontYellow  = '\033[33m'
+    frontBlue    = '\033[34m'
+    frontMagenta = '\033[35m'
+    frontCyan    = '\033[36m'
+    frontWhite   = '\033[37m'
+    frontReset   = '\033[39m'
+    #Background
+    backBlack    = '\033[40m'
+    backRed      = '\033[41m'
+    backGreen    = '\033[42m'
+    backYellow   = '\033[43m'
+    backBlue     = '\033[44m'
+    backMagenta  = '\033[45m'
+    backCyan     = '\033[46m'
+    backWhite    = '\033[47m'
+    backReset    = '\033[49m'
+    #Styles
+    bright       = '\033[1m'
+    dim          = '\033[2m'
+    normal       = '\033[22m'
+    resetAll     = '\033[0m'
 
-#SportClass
-class Sport(ABC):
-    def __init__(self,name):
+# Classes
+class Team:
+    def __init__(self, name, power, strategy, popularity):
         self.name = name
+        self.power = power
+        self.strategy = strategy
+        self.popularity = popularity
+        # For Goal
+        self.goalConceded = 0
+        self.goalScored = 0
+        # For Scoreboard
+        self.point = 0
+        self.win = 0
+        self.lose = 0
+        self.draw = 0
+        self.winRate = 0
 
-    @abstractmethod
-    def Print(self):
-        print("Leaguee Name: ",self.name)
-
-#LeagueClass
-class League(Sport):
-    def __init__(self,name):
-        super().__init__(name)
-        self.name =name
-
-    def Print(self):
-        print("Leaguee Name: ",self.name)
-
-    def RenameLeague(self):
-        self.name = input("Rename The League: ")
-
-#TeamsClass
-class Teams():
-    #Primary
-    def __init__(self,text,name,power,team_strategy,team_strategy_object,point,goal_scored,goal_conceded,win,lose,draw,win_rate,popularity):        
-        self.name                 = name
-        self.text                 = text
-        self.power                = power
-        self.point                = point  
-        self.popularity           = popularity
-        #Strategy
-        self.team_strategy        = team_strategy
-        self.team_strategy_object = team_strategy_object
-        #For Goal and Scoreboard
-        self.goal_conceded        = goal_conceded
-        self.goal_scored          = goal_scored
-        #For Scoreboard
-        self.win                  = win
-        self.lose                 = lose
-        self.draw                 = draw
-        self.win_rate             = win_rate
-
-    #WinRateFunc
     def WinRate(self):
-        self.win_rate = round(100*(self.win/(self.win + self.lose + self.draw)),2)  
-        self.win_rate = ("% "+str(self.win_rate)) 
+        self.winRate = round(100*(self.win/(self.win + self.draw + self.lose)), 2)
+        self.winRate = "½ " + str(self.winRate)
 
-    #PrintTeamDetails
-    def PrintTeam(self):
-        print("- - - - - - - - - - - - - -")
-        print("Name    :  ",self.name)
-        print("Power   :  ",self.power)
-        print("Stratedy:  ",self.team_strategy) 
-        print("Popularity:",self.popularity)
-        print("- - - - - - - - - - - - - -")
 
-    #ChangeTeamStrategy
+    def TeamDetails(self):
+        table = PrettyTable()
+        table.field_names = ["Team Name", "Team Strategy", "Power", "Popularity", "Win Rate"]
+        table.align["Team Name"] = "l"
+        table.add_row([self.name, self.strategy.name, self.power, self.popularity, self.winRate])
+        print(table)
+
     def ChangeStratedy(self):
         print("- - - - - - - - - - - -")
         print("\nPlease Choose Your Team Strategy")
-        print("1: Aggressive")
+        print("1: High Aggressive")
         print("2: Low Aggressive")
         print("3: Normal")
         print("4: Low Defensive")
-        print("5: Defensive")
+        print("5: High Defensive")
         print("0: Stay Current Stratedy")
         print("- - - - - - - - - - - -\n")
         print(self.name)
-        print("current stratedy: ",self.team_strategy)
+        print("current stratedy: ",self.strategy.name)
         print("current power: ",self.power)    
         print("- - - - - - - - - - - -\n")  
         team_stratedy_number = int(input("Enter Number to Your Choosen Stratedy: "))
@@ -82,112 +79,122 @@ class Teams():
             pass
             
         elif team_stratedy_number == 1:           
-            self.team_strategy = "Aggressive" 
-            self.team_strategy_object = Aggressive
+            self.strategy = HighAggressive
 
         elif team_stratedy_number == 2:
-            self.team_strategy = "Low Aggressive" 
-            self.team_strategy_object = Low_Aggressive
+            self.strategy = LowAggressive
 
         elif team_stratedy_number == 3:
-            self.team_strategy = "Normal" 
-            self.team_strategy_object = Normal
+            self.strategy = Normal
 
         elif team_stratedy_number == 4:
-            self.team_strategy = "Low Defensive" 
-            self.team_strategy_object = Low_Defensive
+            self.strategy = LowDefensive
 
         elif team_stratedy_number == 5:
-            self.team_strategy = "Defensive" 
-            self.team_strategy_object = Defensive
+            self.strategy = HighDefensive
 
         else:
             print("Error.Please Try again. ") 
 
-    #ChangeTeamPower
-    def ChangePower(self):
-        print("team name:     ",self.name)
-        print("current skill: ",self.team_strategy)
-        print("current power: ",self.power)
-        self.power = int(input("Power(0/100): "))
-        if 0 <= self.power <= 100:
-            pass
-
-        else:
-            print("\n\n- - - - - - - - -")
-            self.power = input("Only Between 0/100 ")
-        print("- - - - - - - - - - - - - - -")
-
-    #PrintAllTeamsInTheClass
-    def PrintAllTeams():
-        for i in all_teams_objects:
-            print("\n- - - - - - - -")
-            print("Team Name:",i.name)
-            print("TeamStrategy:",i.team_strategy)
-            print("TeamPower:",i.power)
-            print("Popularity:",i.popularity)
-            print("- - - - - - - -\n")
-
-#StratedyClass
-class Stratedy():
-    def __init__(self,name):
+class Strategy:
+    def __init__(self, name, HomeGoalExpection, HomeKeepExpection,AwayGoalExpection,AwayKeepExpection):
         self.name = name
+        self.HomeGoalExpection = HomeGoalExpection
+        self.HomeKeepExpection = HomeKeepExpection
+        self.AwayGoalExpection = AwayGoalExpection
+        self.AwayKeepExpection = AwayKeepExpection
 
-    #PrintStrategy
-    def PrintScreen(self):
-        print(self.name)
-    
-#MatchFunction
+# Variables
+week = 0
+myTeam = None
+myStrategy = None
+
+# Objects
+HighAggressive = Strategy("High Aggressive", 8 ,2,1,1)
+LowAggressive = Strategy("Low Aggressive", 7, 4,1,1)
+Normal = Strategy("Normal", 4, 5, 5, 5)
+LowDefensive = Strategy("Low Defensive", 4, 5, 4, 5)
+HighDefensive = Strategy("High Defensive", 4, 9 ,1,1)
+allStrategies = [HighAggressive, LowAggressive, Normal, LowDefensive, HighDefensive]
+#
+Arsenal = Team("Arsenal", 81, LowAggressive, 294000)
+AstonVilla = Team("Aston Villa", 69, LowDefensive, 112000)
+Bournemouth = Team("Bournemouth", 57, Normal, 97000)
+Brentford = Team("Brentford", 54, HighDefensive, 110000)
+Brighton = Team("Brighton", 63, Normal, 164000)
+Burnley = Team("Burnley", 65, Normal, 127000)
+Chelsea = Team("Chelsea", 84, LowAggressive, 260000)
+CrystalPalace = Team("Crystal Palace", 54, LowAggressive, 187000)
+Everton = Team("Everton", 74, Normal, 201000)
+Fulham = Team("Fulham", 56, LowDefensive, 90000)
+Liverpool = Team("Liverpool", 86, HighAggressive, 301000)
+LutonTown = Team("Luton Town", 53, Normal, 54000)
+ManchesterCity = Team("Manchester City", 91, HighAggressive, 280000)
+ManchesterUnited = Team("Manchester United", 89, LowDefensive, 294000)
+NewcastleUnited = Team("Newcastle United", 71, Normal, 176000)
+NottinghamForest = Team("Nottingham Forest", 58, LowDefensive, 76000)
+SheffieldUnited = Team("Sheffield United", 63, HighDefensive, 134000)
+TottenhamHotspur = Team("Tottenham Hotspur", 83, Normal, 240000)
+WestHamUnited = Team("West Ham United", 76, HighAggressive, 180000)
+WolverhamptonWanderers = Team("Wolverhampton Wanderers", 75, LowDefensive, 99000)
+allTeams = [Arsenal, AstonVilla, Bournemouth, Brentford, Brighton, Burnley, Chelsea, CrystalPalace, Everton, Fulham, Liverpool, LutonTown, ManchesterCity, ManchesterUnited, NewcastleUnited, NottinghamForest, SheffieldUnited,TottenhamHotspur,WestHamUnited,WolverhamptonWanderers]
+
+# Match Function
 def Match():
     #FixtureMaker
-    print("- - - - - - - - - - - - - - - - - - - - - - - - - ")
-    for i in all_teams_objects:
-        while len(all_teams_objects) >= 1:
-            for i in random.choices(all_teams_objects):
-                if  i.team_strategy_object == Aggressive:
-                    goal_home = random.randint(1,7)
-                    keep_home = random.randint(1,4)
+    print(">",week,". Week Results")
+    table = PrettyTable()
+    table.field_names= ["Home", " G ", " A ", "Away",]
+    table.align["Home"] = "r"
+    table.align["Away"] = "l"
 
-                elif i.team_strategy_object == Low_Aggressive:
-                    goal_home = random.randint(1,6)
-                    keep_home = random.randint(0,3)
+    for i in allTeams:
+        while len(allTeams) >= 1:
+            for i in random.choices(allTeams):
+                if  i.strategy == HighAggressive:
+                    goal_home = int(int(i.power * random.randint(2,8))/100)
+                    keep_home = int(int(i.power * random.randint(1,3))/100)
 
-                elif  i.team_strategy_object == Normal: 
-                    goal_home = random.randint(1,5)
-                    keep_home = random.randint(1,4)
+                elif i.strategy == LowAggressive:
+                    goal_home = int(int(i.power * random.randint(2,7))/100)
+                    keep_home = int(int(i.power * random.randint(1,4))/100)
 
-                elif i.team_strategy_object == Low_Defensive:
-                    goal_home = random.randint(2,5)
-                    keep_home = random.randint(1,5)
+                elif  i.strategy == Normal: 
+                    goal_home = int(int(i.power * random.randint(3,5))/100)
+                    keep_home = int(int(i.power * random.randint(2,4))/100)
 
-                elif i.team_strategy_object == Defensive:
-                    goal_home = random.randint(1,4)
-                    keep_home = random.randint(2,6)
+                elif i.strategy == LowDefensive:
+                    goal_home = int(int(i.power * random.randint(2,5))/100)
+                    keep_home = int(int(i.power * random.randint(3,6))/100)
 
-                all_teams_objects.remove(i)
+                elif i.strategy == HighDefensive:
+                    goal_home = int(int(i.power * random.randint(2,5))/100)
+                    keep_home = int(int(i.power * random.randint(2,7))/100)
 
-                for a in random.choices(all_teams_objects):
-                    if  a.team_strategy_object == Aggressive:
-                        goal_away = random.randint(1,6)
-                        keep_away = random.randint(0,4)
+                allTeams.remove(i)
 
-                    elif a.team_strategy_object == Low_Aggressive:
-                        goal_away = random.randint(1,5)
-                        keep_away = random.randint(0,3)
+                for a in random.choices(allTeams):
+                    if  a.strategy == HighAggressive:
+                        goal_away = int(int(i.power * random.randint(1,7))/100)
+                        keep_away = int(int(i.power * random.randint(1,3))/100)
 
-                    elif a.team_strategy_object == Normal: 
-                        goal_away = random.randint(1,5)
-                        keep_away = random.randint(0,5)
+                    elif a.strategy == LowAggressive:
+                        goal_away = int(int(a.power * random.randint(1,6))/100)
+                        keep_away = int(int(a.power * random.randint(2,4))/100)
 
-                    elif a.team_strategy_object == Low_Defensive:
-                        goal_away = random.randint(1,4)
-                        keep_away = random.randint(1,4)
+                    elif a.strategy == Normal: 
+                        goal_away = int(int(a.power * random.randint(3,5))/100)
+                        keep_away = int(int(a.power * random.randint(3,5))/100)
 
-                    elif a.team_strategy_object == Defensive:
-                        goal_away = random.randint(1,4)
-                        keep_away = random.randint(2,5)
+                    elif a.strategy == LowDefensive:
+                        goal_away = int(int(a.power * random.randint(2,5))/100)
+                        keep_away = int(int(a.power * random.randint(2,5))/100)
 
-                    all_teams_objects.remove(a)
+                    elif a.strategy == HighDefensive:
+                        goal_away = int(int(a.power * random.randint(1,6))/100)
+                        keep_away = int(int(a.power * random.randint(2,7))/100)
+
+                    allTeams.remove(a)
 
                     goal_home = goal_home - keep_away
                     goal_away = goal_away - keep_home
@@ -199,15 +206,15 @@ def Match():
                         goal_away = 0
 
                     #MatchMaker
-                    print("-",i.text,goal_home," - ",goal_away,a.name)
-                    print("- - - - - - - - - - - - - - - - - - - - - - - - - ")
+                    table.add_row([i.name,goal_home,goal_away,a.name],divider=True)
 
                     #GoalConceded
-                    i.goal_conceded = i.goal_conceded + goal_away
-                    a.goal_conceded = a.goal_conceded + goal_home
+                    i.goalConceded = i.goalConceded + goal_away
+                    a.goalConceded = a.goalConceded + goal_home
                     #GoalScored
-                    i.goal_scored = i.goal_scored + goal_home
-                    a.goal_scored = a.goal_scored + goal_away
+                    i.goalScored = i.goalScored + goal_home
+                    a.goalScored = a.goalScored + goal_away
+
                     #Win
                     if goal_home > goal_away:
                         #Point
@@ -218,15 +225,15 @@ def Match():
                         i.win   = i.win + 1
                         a.lose  = a.lose + 1
                         #HardMatchWin
-                        if i.popularity <= 300000 and a.popularity >= 300000:
+                        if i.popularity <= 250000 and a.popularity >= 250000:
                             i.popularity = i.popularity + 20000
                             a.popularity = a.popularity - 12000
                         #EasyMatchWin
-                        elif i.popularity >= 300000 and a.popularity <= 300000:
+                        elif i.popularity >= 250000 and a.popularity <= 250000:
                             i.popularity = i.popularity + 7000
                             a.popularity = a.popularity - 5000
                         #Derby
-                        elif i.popularity >= 300000 and a.popularity >= 300000:
+                        elif i.popularity >= 250000 and a.popularity >= 250000:
                             i.popularity = i.popularity + 10000
                             a.popularity = a.popularity - 7000
                         #2LowTeamMatch    
@@ -234,6 +241,7 @@ def Match():
                             i.popularity = i.popularity + 12000
                             a.popularity = a.popularity - 10000                            
                     #Lose
+
                     elif goal_away > goal_home:
                         #Point
                         a.point = a.point + 3
@@ -243,15 +251,15 @@ def Match():
                         a.win   = a.win  + 1
                         i.lose  = i.lose + 1
                         #HardMatchLose
-                        if i.popularity <= 300000 and a.popularity >= 300000:
+                        if i.popularity <= 250000 and a.popularity >= 250000:
                             i.popularity = i.popularity - 7000
                             a.popularity = a.popularity + 7000
                         #EasyMatchLose
-                        elif i.popularity >= 300000 and a.popularity <= 300000:
+                        elif i.popularity >= 250000 and a.popularity <= 250000:
                             i.popularity = i.popularity - 10000
                             a.popularity = a.popularity + 15000
                         #Derby
-                        elif i.popularity >= 300000 and a.popularity >= 300000:
+                        elif i.popularity >= 250000 and a.popularity >= 250000:
                             i.popularity = i.popularity - 20000
                             a.popularity = a.popularity + 20000
                         #2LowTeamMatch    
@@ -259,6 +267,7 @@ def Match():
                             i.popularity = i.popularity - 10000
                             a.popularity = a.popularity + 12000     
                     #Draw
+
                     else:
                         #Point
                         i.point = i.point + 1
@@ -269,294 +278,200 @@ def Match():
                         i.draw  = i.draw  + 1
                         a.draw  = a.draw  + 1
                         #HardMatchDraw
-                        if i.popularity <= 300000 and a.popularity >= 300000:
+                        if i.popularity <= 250000 and a.popularity >= 250000:
                             i.popularity = i.popularity + 10000
                             a.popularity = a.popularity - 7000
                         #EasyMatchDraw
-                        elif i.popularity >= 300000 and a.popularity <= 300000:
+                        elif i.popularity >= 250000 and a.popularity <= 250000:
                             i.popularity = i.popularity - 5000
                             a.popularity = a.popularity + 12000
                         #DerbyMatchDraw
-                        elif i.popularity >= 300000 and a.popularity >= 300000:
+                        elif i.popularity >= 250000 and a.popularity >= 250000:
                             i.popularity = i.popularity + 7000
                             a.popularity = a.popularity + 12000
                         #2LowTeamDraw
                         else:
                             i.popularity = i.popularity + 7000
                             a.popularity = a.popularity + 10000     
-
-                    #all_teams_objects.sort(key=lambda x: x.point, reverse = True)
-                    break
+                    
     
     #AgainAddtoList
-    for i in [Arsenal,Aston_Villa,Brentford,Brighto,Burnley,Chelsea,Crystal_Palace,Everton,Leeds_United,Leicester_City,Liverpool,Manchester_City,Manchester_United,Newcastle_United,Norwich_City,Southampton,Tottenham_Hotspur,Watford,West_Ham_United,Wolverhampton_Wanderers]:
-        all_teams_objects.append(i)
+    for i in [Arsenal, AstonVilla, Bournemouth, Brentford, Brighton, Burnley, Chelsea, CrystalPalace, Everton, Fulham, Liverpool, LutonTown, ManchesterCity, ManchesterUnited, NewcastleUnited, NottinghamForest, SheffieldUnited,TottenhamHotspur,WestHamUnited,WolverhamptonWanderers]:
+        allTeams.append(i)
+    print(table)
 
-#League OBject Created
-league = League("Premier League")
+# ScoreBoard Function
+def ScoreBoard():
+    for i in allTeams:
+        i.WinRate()
+    table = PrettyTable()
+    table.field_names = ["#", "Name", "Goal Scored", "Goal Conceded", "W", "D", "L", "Power", "Strategy", "Win Rate", "Point", "Popularity"]
+    table.align["Name"] = "l"
+    sort = 1
+    allTeams.sort(key = lambda x: (x.point, x.goalScored), reverse = True)
+    for i in allTeams:
+        table.add_row([sort, i.name, i.goalScored, i.goalConceded, i.win, i.draw, i.lose, i.power, i.strategy.name, i.winRate, i.point, i.popularity],divider=True)
+        sort += 1
+    table.set_style(SINGLE_BORDER)
+    print(table)
 
-#All Teams is Created
-Arsenal                 = Teams("Arsenal               ","Arsenal",80.0,"Aggressive"              ,0,0,0,0,0,0,0,0,430000)
-Aston_Villa             = Teams("Aston_Villa           ","Aston_Villa",55.0,"Normal"              ,0,0,0,0,0,0,0,0,190000)
-Brentford               = Teams("Brentford             ","Brentford",53.0,"Defensive"             ,0,0,0,0,0,0,0,0,210000)
-Brighto                 = Teams("Brighto               ","Brighto",53.0,"Normal"                  ,0,0,0,0,0,0,0,0,170000)
-Burnley                 = Teams("Burnley               ","Burnley",57.0,"Low Defensive"           ,0,0,0,0,0,0,0,0,150000)
-Chelsea                 = Teams("Chelsea               ","Chelsea",78.0,"Aggressive"              ,0,0,0,0,0,0,0,0,400000)
-Crystal_Palace          = Teams("Crystal_Palace        ","Crystal_Palace",61.0,"Normal"           ,0,0,0,0,0,0,0,0,250000)
-Everton                 = Teams("Everton               ","Everton",72.0,"Low Defensive"           ,0,0,0,0,0,0,0,0,320000)
-Leeds_United            = Teams("Leeds_United          ","Leeds_United",56.0,"Defensive"          ,0,0,0,0,0,0,0,0,270000)
-Leicester_City          = Teams("Leicester_City        ","Leicester_City",70.0,"Normal"           ,0,0,0,0,0,0,0,0,390000)
-Liverpool               = Teams("Liverpool             ","Liverpool",82.0,"Low Aggressive"        ,0,0,0,0,0,0,0,0,420000)
-Manchester_City         = Teams("Manchester_City       ","Manchester_City",79.0,"Aggressive"      ,0,0,0,0,0,0,0,0,410000)
-Manchester_United       = Teams("Manchester_United     ","Manchester_United",81.0,"Low Aggressive",0,0,0,0,0,0,0,0,450000)
-Newcastle_United        = Teams("Newcastle_United      ","Newcastle_United",66.0,"Low Defensive"  ,0,0,0,0,0,0,0,0,350000)
-Norwich_City            = Teams("Norwich_City          ","Norwich_City",64.0,"Defensive"          ,0,0,0,0,0,0,0,0,260000)
-Southampton             = Teams("Southampton           ","Southampton",55.0,"Normal"              ,0,0,0,0,0,0,0,0,270000)
-Tottenham_Hotspur       = Teams("Tottenham_Hotspur     ","Tottenham_Hotspur",74.0,"Low Aggressive",0,0,0,0,0,0,0,0,420000)
-Watford                 = Teams("Watford               ","Watford",62.0,"Normal"                  ,0,0,0,0,0,0,0,0,290000)
-West_Ham_United         = Teams("West_Ham_United       ","West_Ham_United",68.0,"Normal"          ,0,0,0,0,0,0,0,0,310000)
-Wolverhampton_Wanderers = Teams("Wolverhampton         ","Wolverhampton",56.0,"Low Defensive"     ,0,0,0,0,0,0,0,0,220000)
-
-#All Stratedy is Created
-Aggressive              = Stratedy("Aggressive")
-Low_Aggressive          = Stratedy("Low Aggressive")
-Normal                  = Stratedy("Normal")
-Low_Defensive           = Stratedy("Low Defensive")
-Defensive               = Stratedy("Defensive")
-
-#Object Lists
-all_teams_objects = [Arsenal,Aston_Villa,Brentford,Brighto,Burnley,Chelsea,Crystal_Palace,Everton,Leeds_United,Leicester_City,Liverpool,Manchester_City,Manchester_United,Newcastle_United,Norwich_City,Southampton,Tottenham_Hotspur,Watford,West_Ham_United,Wolverhampton_Wanderers]
-all_skill_objects = [Aggressive,Low_Aggressive,Normal,Low_Defensive,Defensive]
-
-#LandingPageLoop
+# Choosing Team and Strategy
 while True:
-    league.Print()
-    print("Welcome to Football Manager Game for",league.name)
-
-    # Team Select
-    print("-----------------------------------------------")
-    for i in teams:
-        print("-",i)
-    print("-----------------------------------------------")    
-    my_team = input("Choose a team from the list above: ") 
-
-    if my_team in teams:
-        for i in strategies:
-            print("-",i)
-        my_strategy = input("Choose a team from the list above: ") 
-
-        if my_strategy in strategies:
-            print("\nNice Chooses. Let's Play.\n")
-            break
-        else:
-            print("Error.")
-    else:
-        print("Error.")
-
-#My Team Details Added to The MyTeam Variable
-for i in all_teams_objects:
-    if my_team in i.name:
-        our_team = i
-for i in all_skill_objects:
-    if my_strategy in i.name:
-        our_strategy = i
-        our_team.team_strategy = my_strategy
-
-#Teams and Strategies is united
-for i in all_teams_objects:         
-    if i.team_strategy == "Aggressive" :
-        i.team_strategy_object = Aggressive
-
-    elif i.team_strategy == "Low Aggressive":
-        i.team_strategy_object = Low_Aggressive
-
-    elif i.team_strategy == "Normal":
-        i.team_strategy_object = Normal   
-
-    elif i.team_strategy == "Low Defensive":
-        i.team_strategy_object = Low_Defensive
-
-    elif i.team_strategy == "Defensive":
-        i.team_strategy_object = Defensive
-       
-#MainPageLoop
-while True:
-    #MainPage
-    print("========================================================")
-    print("===============",league.name,"MainPage","===============")
-    print("1: Team")
-    print("2: League")
-    print("3: Options")
-    print("0: Exit\n")
-    mainpage_page = int(input("Choose Any Page Number: "))
-
-    #Exit
-    if  mainpage_page  == 0:
-        break
-
-    #TeamPage
-    elif mainpage_page == 1:
-        print("\n------------------------------------")
-        print("--------------- Team ---------------")
-        print("1: My Team")        
-        print("2: Change Stratedy")
-        print("3: League Teams")
-        print("0: Back to MainPage\n")
-        team_page = int(input("Choose Any Page Number: "))
-
-        while True:
-            #BackToMainPage 
-            if team_page  ==  0 :
-                break
-            
-            #My Team
-            elif team_page == 1 :
-                our_team.PrintTeam()
-                break
-
-            #Change Stratedy
-            elif team_page == 2 :
-                our_team.ChangeStratedy()
-                break
-
-            #Other Teams
-            elif team_page == 3 :
-                Teams.PrintAllTeams()
-                break
-            
-            #Error
-            else :
-                print("Error. Please try again.")
-
-    #MatchPage
-    elif mainpage_page == 2:
-        print("\n-------------------------------------")
-        print("--------------- League ---------------")
-        print("1: Go to Next Week","(Week-"+str(week_counter)+")")
-        print("2: See the ScoreBoard")
-        print("3: Fast Change Strategy") 
-        print("0: Back To The Menu\n")
-        league_page = int(input("Choose Any Page Number: "))
-
-        while True:
-            #BackToMainPage
-            if league_page == 0 :
-                break
-
-            #NextWeekPage
-            elif league_page == 1 :
-                if week_counter <= 38:
-                    week_counter = week_counter + 1  
-                    #WeekResults
-                    print("\n-----------",str(week_counter),". Week Results -----------")
-                    Match()
-                    break           
-                    
-                elif week_counter == 39 :
-                    print("\n----------------------------------------------")
-                    print("-   The League is ended. Go to Scoreboard    -")
-                    print("----------------------------------------------\n")
-
-                    all_teams_objects.sort(key=lambda x: x.point, reverse = True)
-                    print("Winners Teams!")
-                    print("1.",all_teams_objects[0].name)
-                    print("2.",all_teams_objects[1].name)
-                    print("3.",all_teams_objects[2].name,"\n")
-
-                    print("Relegations Teams!")
-                    print("18.",all_teams_objects[17].name)
-                    print("19.",all_teams_objects[18].name)
-                    print("20.",all_teams_objects[19].name,"\n")
-
-                    if our_team == all_teams_objects[0]:
-                        print("What the Hell. You are Best! Keep Going... ")
-                        print("Now. We will be best in The Champions League (Coming Soon)")
-                    
-                    elif our_team == all_teams_objects[1]:
-                        print("Congratulations.What a Team Spirit!  You are Second! You deserved to join The Champions League...")
-
-                    elif our_team == all_teams_objects[2]:
-                        print("Nice Team . You are Third! Keep Going...You deserved to join The Champions League...")         
-
-                    elif our_team == all_teams_objects[17]:
-                        print("Sorry For That But You Lost.")   
-                                        
-                    elif our_team == all_teams_objects[18]:
-                        print("Sorry For That But You Lost.")   
-
-                    elif our_team == all_teams_objects[19]:
-                        print("Sorry For That But You are Trash.")   
-
-                    else:
-                        print("Hey! You are not bad.Try Again \n\n")                    
-                    break
-
-            #Scoreboard                        
-            elif league_page == 2 :
-                for i in all_teams_objects:
-                    i.WinRate()
-                    
-                    all_teams_objects.sort(key=lambda x: x.point, reverse = True)
-                sort = 1
-                
-                print("  |              Name               |  Point  |  Goal Scored  |  Goal Conceded  |   W   |   D   |   L   |  WinRate  |    Popularity    |  Power  |    Current Stratedy   |")
-                print("  ------------------------------------------------------------------------------------------------------------------------------------------------------------------------")
-                for i in all_teams_objects:
-                    print("  ",sort,"- ",i.text,"        ",i.point,"          ",i.goal_scored,"           ",i.goal_conceded,"           ",i.win,"    ",i.draw,"    ",i.lose,"    ",i.win_rate,"     ",i.popularity,"     ",i.power,"     ",i.team_strategy)
-                    print(" -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  ")
-                    sort = sort+1
-                break
-
-            #FastChangeStrategy
-            elif league_page == 3:
-                our_team.ChangeStratedy()
-                break
-
-            #Error
-            else:
-                print("Error. Please try again .")
-                break                      
+    table = PrettyTable()
+    table.field_names = ["#", "Team", "Power", "Strategy", "Popularity"]
+    table.align["Team"] = "l"
+    sort = 1
+    for i in allTeams:
+        table.add_row([sort, i.name, i.power, i.strategy.name, i.popularity],divider=True)
+        sort += 1
+    table.set_style(SINGLE_BORDER)
+    print(table)
+    index = int(input("Choose Your Team. Enter the Team Number! "))    
+    myTeam = allTeams[index-1]
+    #
+    table = PrettyTable()
+    table.field_names = ["#", "Strategy", "Goal", "Keep"]
+    table.align["Strategy"] = "l"
+    sort = 1
+    for i in allStrategies:
+        table.add_row([sort, i.name, i.HomeGoalExpection, i.HomeKeepExpection],divider=True)
+        sort += 1
+    table.set_style(SINGLE_BORDER)
+    print(table)
+    index = int(input("Choose Your Strategy. Enter the Strategy Number! "))
+    myTeam.strategy = allStrategies[index-1]
+    myStrategy = allStrategies[index-1]
+    break
     
-    #OptionsPage
-    elif mainpage_page == 3:
-        print("\n------------------------------------")
-        print("------------- Options --------------")
-        print("1- Choose Team Power")
-        print("2- Change Team Stratedy")
-        print("3: Rename the League")
-        print("0- Back to MainPage\n")
-        options_page = int(input("Choose Any Page Number: "))
+# Main Loop
+while True:
+    print("\n-------------------------------------")
+    print("           League Manager Game       ")
+    print("-------------------------------------\n")
+    print("> Team")
+    print("---------------------")
+    print("> 1: My Team")
+    print("> 2: Strategy")
+    print("---------------------")
+    print("> League")
+    print("---------------------")
+    print("> 3: Fixture (Coming Soon...)")
+    print("> 4: See the Scoreboard")
+    print("> 5: Next Week >", week, ". Week")
+    print("---------------------")
+    print("> Statistics")
+    print("---------------------")
+    print("> 6: Most Strongest Teams")
+    print("> 7: Most Popular Teams")
+    print("---------------------")
+    print("> 8: Info")
+    print("> 0: Exit the Game\n")
+    mainpagePage = int(input("Enter Number to Your Choosen Stratedy: "))
 
-        while True:
-            #BackToMainPage
-            if options_page == 0:
-                break
-
-            #Change Team Power
-            elif options_page == 1:
-                    print("\n\n------------------------------------------------")
-                    for i in [Arsenal,Aston_Villa,Brentford,Brighto,Burnley,Chelsea,Crystal_Palace,Everton,Leeds_United,Leicester_City,Liverpool,Manchester_City,Manchester_United,Newcastle_United,Norwich_City,Southampton,Tottenham_Hotspur,Watford,West_Ham_United,Wolverhampton_Wanderers]:
-                        i.ChangePower()
-                    print("------------------------------------\n\n")
-                    break
-            
-            #Change Team Stratedy
-            elif options_page == 2:
-                    print("\n\n---------------------------------------------------")
-                    for i in [Arsenal,Aston_Villa,Brentford,Brighto,Burnley,Chelsea,Crystal_Palace,Everton,Leeds_United,Leicester_City,Liverpool,Manchester_City,Manchester_United,Newcastle_United,Norwich_City,Southampton,Tottenham_Hotspur,Watford,West_Ham_United,Wolverhampton_Wanderers]:
-                        i.ChangeStratedy()
-                    print("------------------------------------\n\n")
-                    break
-
-            elif options_page == 3:
-                league.name = input("Enter The New League Name: ")
-                break
-
-            #Error
-            else:
-                print("Error. Please try again.")
-                break
-    #Error
-    else:
-        print("Error. Please try again .")
+    # Exit
+    if mainpagePage == 0:
+        print("Exited the Game.\n")
         break
+
+    # My Team
+    elif mainpagePage == 1:
+        myTeam.TeamDetails()
+
+    # Strategy
+    elif mainpagePage == 2:
+        myTeam.ChangeStratedy()
+
+    # Fixture
+    elif mainpagePage == 3:
+        print("Still working on it!")
+
+    # See the Scoreboard
+    elif mainpagePage == 4:
+        ScoreBoard()
+
+    # Next Week
+    elif mainpagePage == 5:
+        if week <= (2 * (len(allTeams)-1)):
+            week += 1
+            print("\n-------------------------------------")
+            print("          ",week, ". Week Results    ")
+            print("-------------------------------------\n")
+            Match()
+
+        elif week == (2 * (len(allTeams)-1)) + 1:
+            print("\n----------------------------------------------")
+            print("         The League is ended. Results!         ")
+            print("----------------------------------------------\n")
+            #
+            ScoreBoard()
+            print("Winners Teams!")
+            print("1.", allTeams[0].name)
+            print("2.", allTeams[1].name)
+            print("3.", allTeams[2].name, "\n")
+            print("---------------------------\n")
+            print("Relegations Teams!")
+            print("18.", allTeams[-3].name)
+            print("19.", allTeams[-2].name)
+            print("20.", allTeams[-1].name, "\n")
+
+            if myTeam == allTeams[0]:
+                print("> What the Hell. You are The Champion!")
+
+            elif myTeam == allTeams[1]:
+                print("> Congratulations. What a Team Spirit! You are Second! Keep Going...")
+
+            elif myTeam == allTeams[2]:
+                print("> Nice Team. You are Third! Keep Going... You deserved to join The Champions League...")
+
+            elif myTeam == allTeams[-3]:
+                print("> Sorry For That But You Elegated.")
+
+            elif myTeam == allTeams[-2]:
+                print("> Sorry For That But You Lost.")
+
+            elif myTeam == allTeams[-1]:
+                print("> Sorry For That But You are Terrible.")
+
+            else:
+                print("Nice Try. You are not bad. Try Again \n\n")
+
+    # Most Strongest Teams
+    elif mainpagePage == 6:
+        for i in allTeams:
+            i.WinRate()
+        table = PrettyTable()
+        table.field_names = ["#", "Name", "Goal Scored", "Goal Conceded", "W", "D", "L", "Power", "Strategy", "Win Rate", "Point", "Popularity"]
+        table.align["Name"] = "l"
+        sort = 1
+        allTeams.sort(key = lambda x: x.power, reverse = True)
+        for i in allTeams:
+            table.add_row([sort, i.name, i.goalScored, i.goalConceded, i.win, i.draw, i.lose, i.power, i.strategy.name, i.winRate, i.point, i.popularity],divider=True)
+            sort += 1
+        table.set_style(SINGLE_BORDER)
+        print(table)
+    
+    # Most Popular Teams
+    elif mainpagePage == 7:
+        for i in allTeams:
+            i.WinRate()
+        table = PrettyTable()
+        table.field_names = ["#", "Name", "Goal Scored", "Goal Conceded", "W", "D", "L", "Power", "Strategy", "Win Rate", "Point", "Popularity"]
+        table.align["Name"] = "l"
+        sort = 1
+        allTeams.sort(key = lambda x: x.popularity, reverse = True)
+        for i in allTeams:
+            table.add_row([sort, i.name, i.goalScored, i.goalConceded, i.win, i.draw, i.lose, i.power, i.strategy.name, i.winRate, i.point, i.popularity],divider=True)
+            sort += 1
+        table.set_style(SINGLE_BORDER)
+        print(table)
+    
+    # Info
+    elif mainpagePage == 8:
+        print("Developer: ErenElagz")
+        print("2023-2024 Premier League Text Based Football Manager Game.")
+        print("Scoreboard, Teams, Strategies, Weekly Matches and more...")
+        print("Have a Fun! Good Luck <3")
+
+    # Error
+    else:
+        print("\nError. Please try again.")
