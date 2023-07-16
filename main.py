@@ -152,15 +152,15 @@ def Match():
         while len(allTeams) >= 1:
             for i in random.choices(allTeams):
                 if  i.strategy == HighAggressive:
-                    goal_home = int(int(i.power * random.randint(2,8))/100)
+                    goal_home = int(int(i.power * random.randint(2,10))/100)
                     keep_home = int(int(i.power * random.randint(1,3))/100)
 
                 elif i.strategy == LowAggressive:
-                    goal_home = int(int(i.power * random.randint(2,7))/100)
+                    goal_home = int(int(i.power * random.randint(2,8))/100)
                     keep_home = int(int(i.power * random.randint(1,4))/100)
 
                 elif  i.strategy == Normal: 
-                    goal_home = int(int(i.power * random.randint(3,5))/100)
+                    goal_home = int(int(i.power * random.randint(3,6))/100)
                     keep_home = int(int(i.power * random.randint(2,4))/100)
 
                 elif i.strategy == LowDefensive:
@@ -175,11 +175,11 @@ def Match():
 
                 for a in random.choices(allTeams):
                     if  a.strategy == HighAggressive:
-                        goal_away = int(int(i.power * random.randint(1,7))/100)
+                        goal_away = int(int(i.power * random.randint(1,9))/100)
                         keep_away = int(int(i.power * random.randint(1,3))/100)
 
                     elif a.strategy == LowAggressive:
-                        goal_away = int(int(a.power * random.randint(1,6))/100)
+                        goal_away = int(int(a.power * random.randint(1,7))/100)
                         keep_away = int(int(a.power * random.randint(2,4))/100)
 
                     elif a.strategy == Normal: 
